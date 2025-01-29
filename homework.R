@@ -18,7 +18,8 @@
 # Load the readr package
 
 # ANSWER
-
+library(tidyverse)
+library(readr)
 
 ### QUESTION 2 ----- 
 
@@ -42,10 +43,13 @@
 
 # A list of column names are provided to use:
 
-col_names  <-  c("trial_num","speed_actual","speed_response","correct")
+#colnames  <-  c("trial_num","speed_actual","speed_response","correct")
 
 # ANSWER
-
+fname = "data_A/6191_1.txt"
+colnames  <-  c("trial_num","speed_actual","speed_response","correct")
+ds1 <- read_tsv(file = fname, col_names = colnames, skip = 7)
+print(ds1)
 
 
 ### QUESTION 3 ----- 
@@ -55,6 +59,10 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # Then write the new data to a CSV file in the "data_cleaned" folder
 
 # ANSWER
+ds1 <- ds1 %>%
+  mutate(new_trial_num = trial_num + 100)
+
+write.csv(ds1, "data_cleaned/updated_ds1.csv", row.names = FALSE)
 
 
 ### QUESTION 4 ----- 
@@ -63,6 +71,8 @@ col_names  <-  c("trial_num","speed_actual","speed_response","correct")
 # Store it to a variable
 
 # ANSWER
+file_list <- list.files("data_A", full.names = TRUE)
+print(file_list)
 
 
 ### QUESTION 5 ----- 
