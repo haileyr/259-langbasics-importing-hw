@@ -18,8 +18,10 @@
 # Load the readr package
 
 # ANSWER
+
 library(tidyverse)
 library(readr)
+
 
 ### QUESTION 2 ----- 
 
@@ -60,6 +62,7 @@ print(ds1)
 # Then write the new data to a CSV file in the "data_cleaned" folder
 
 # ANSWER
+
 ds1 <- ds1 %>%
   mutate(new_trial_num = trial_num + 100)
 
@@ -72,6 +75,7 @@ write.csv(ds1, "data_cleaned/updated_ds1.csv", row.names = FALSE)
 # Store it to a variable
 
 # ANSWER
+
 file_list <- list.files("data_A", full.names = TRUE)
 print(file_list)
 
@@ -81,23 +85,19 @@ print(file_list)
 # Read all of the files in data_A into a single tibble called ds
 
 # ANSWER
-# Define column specs with trial_num as character to handle 'ten'
+
 col_spec <- cols(
-  trial_num = col_character(),  # Keep as character for now
+  trial_num = col_character(),
   speed_actual = col_character(),
   speed_response = col_character(),
   correct = col_logical()
 )
 
-# Read all files into a tibble called ds, without converting 'ten' yet
 ds_list <- lapply(file_list, function(file) {
   read_tsv(file, col_names = colnames, skip = 7, col_types = col_spec)
 })
 
-# Combine all datasets into one tibble
 ds <- bind_rows(ds_list)
-
-# Print the result (with trial_num still as character)
 print(ds)
 
 
@@ -112,20 +112,16 @@ print(ds)
 # (It should work now, but you'll see a warning because of the erroneous data point)
 
 # ANSWER
-# Custom function to convert 'ten' to '10' and other values to integers
-convert_to_numeric <- function(x) {
+
+convert_integer <- function(x) {
   ifelse(x == "ten", 10, as.integer(x))
 }
 
-# Now convert the trial_num to integer, handling 'ten' correctly
 ds <- ds %>%
-  mutate(trial_num = convert_to_numeric(trial_num))
+  mutate(trial_num = convert_integer(trial_num))
 
-# Add 100 to the new numeric trial_num column
 ds_100 <- ds %>%
   mutate(new_trial_num = trial_num + 100)
-
-# Print the updated dataset
 print(ds_100)
 
 
@@ -137,18 +133,14 @@ print(ds_100)
 # Re-import the data so that filename becomes a column
 
 # ANSWER
-?read_tsv
 
-# Re-import the data with the filename as a column
-ds_list_with_id <- lapply(file_list, function(file) {
+ds_list <- lapply(file_list, function(file) {
   read_tsv(file, col_names = colnames, skip = 7, col_types = col_spec, id = "filename")
 })
 
-# Combine the list of tibbles into one tibble
-ds_with_id <- bind_rows(ds_list_with_id)
+ds <- bind_rows(ds_list)
+print(ds)
 
-# Print the combined tibble to check the result
-print(ds_with_id)
 
 ### QUESTION 8 -----
 
@@ -157,4 +149,17 @@ print(ds_with_id)
 # There are two sheets of data -- import each one into a new tibble
 
 # ANSWER
+
+install.packages("readxl")
+library(readxl)
+
+excel_file <- "data_B/participant_info.xlsx"
+
+colnames_sheet2 <- c("id", "date")
+
+sheet1 <- read_excel(excel_file, sheet = 1)
+sheet2 <- read_excel(excel_file, sheet = 2, col_names = colnames_sheet2)
+
+print(sheet1)
+print(sheet2)
 
